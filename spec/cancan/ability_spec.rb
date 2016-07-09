@@ -5,6 +5,26 @@ describe CanCan::Ability do
     (@ability = double).extend(CanCan::Ability)
   end
 
+  it 'is able to lazy eval hash conditions' do
+    class Point
+      def self.asd
+        2
+      end
+    end
+
+
+
+    @ability.can :read, Point, asd: 3
+
+    expect(@ability.can?(:read, Point)).to be(true)
+    expect(@ability.can?(:read, Point)).to be(true)
+    expect(@ability.can?(:read, Point)).to be(true)
+    expect(@ability.can?(:read, Point)).to be(true)
+    expect(@ability.can?(:read, Point)).to be(true)
+    expect(@ability.can?(:read, Point)).to be(true)
+    expect(@ability.can?(:read, Point)).to be(true)
+  end
+
   it "is able to :read anything" do
     @ability.can :read, :all
     expect(@ability.can?(:read, String)).to be(true)

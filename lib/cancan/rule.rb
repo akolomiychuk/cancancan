@@ -106,6 +106,9 @@ module CanCan
       return true if conditions.empty?
       adapter = model_adapter(subject)
 
+      # Resolve procs in conditions
+      conditions = conditions.map { |name, value|  value.kind_of?(Proc) ? [name, value.call] : [name, value] }
+
       if adapter.override_conditions_hash_matching?(subject, conditions)
         return adapter.matches_conditions_hash?(subject, conditions)
       end

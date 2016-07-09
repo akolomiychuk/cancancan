@@ -13,6 +13,8 @@ module CanCan
       # you're using in the where. Instead, `references()` is required
       # in addition to `includes()` to force the outer join.
       def build_relation(*where_conditions)
+        # Resolve procs in conditions
+        where_conditions = where_conditions.map { |name, value|  value.kind_of?(Proc) ? [name, value.call] : [name, value] }
         relation = @model_class.where(*where_conditions)
         relation = relation.includes(joins).references(joins) if joins.present?
         relation
@@ -25,6 +27,8 @@ module CanCan
       end
 
       def self.matches_condition?(subject, name, value)
+        # Resolve proc
+        value = value.kind_of?(Proc) ? value.call : value
         # Get the mapping from enum strings to values.
         enum = subject.class.send(name.to_s.pluralize)
         # Get the value of the attribute as an integer.
